@@ -128,8 +128,8 @@ Residues|Hydrophobicity|Colour
 --------|--------------|------
 FIWLVM|Highly hydrophobic|Dark red
 YCA|Moderately hydrophobic|Light red
-THGSQ|Neutral|Blue
-RKNEPD|Hydrophilic|Green
+THGSQ|Neutral|Green
+RKNEPD|Hydrophilic|Blue
 
 Two examples are given below, with the commands that created them, and links to the files.
 
