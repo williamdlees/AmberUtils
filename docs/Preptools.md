@@ -143,4 +143,4 @@ See [**this page**](docs/Substitutions.md) for typical usage scenarios.
 
 The ATOM records for the specified range of residues are copied from the replacement file, replacing any ATOM records for those residues in the input file. As ANISOU records are not used in MD simulation and can make the ATOM records harder to read and check, an option allows them to be removed.
 
-The tool will report any residue substitutions that are made as a result of the replacement (it will not report changes in atomic co-ordinates). It will warn if histidines are inserted, as the protonationn may need to be reviewed. See [**this page**](docs/Substitutions.md) for typical usage scenarios.
+The tool will report any residue substitutions that are made as a result of the replacement (it will not report changes in atomic co-ordinates). It will warn if histidines are inserted, as the protonationn may need to be reviewed. See [**this page**](Substitutions.md) for typical usage scenarios.
