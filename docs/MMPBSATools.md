@@ -136,13 +136,13 @@ Two examples are given below, with the commands that created them, and links to 
 #### Example 1: delta-G plot
 
 python DrawInteractions.py -o [**CR6261_interactions_control.csv**](test/CR6261_interactions_control.csv) [**FINAL_DECOMP_MMPBSA_pw_table_20_10_av.csv**](test/FINAL_DECOMP_MMPBSA_pw_table_20_10_av.csv)  \
-[**hbonds_consol.csv**](test/hbonds_consol.csv) 300 [**CR6261_WT_interactions.pdf**](docs/CR6261_WT_interactions.pdf) [**CR6261_WT_interactions.csv**](docs/CR6261_WT_interactions.csv)
+[**hbonds_consol.csv**](test/hbonds_consol.csv) 300 [**CR6261_WT_interactions.pdf**](CR6261_WT_interactions.pdf) [**CR6261_WT_interactions.csv**](CR6261_WT_interactions.csv)
 
 ![Image](https://rawgit.com/williamdlees/AmberUtils/master/docs/CR6261_WT_interactions.png)
 
 #### Example 2: delta-delta-G plot
 
-python DrawInteractions.py -o -x -c [**FINAL_DECOMP_MMPBSA_pw_table_20_10_av.csv**](test/FINAL_DECOMP_MMPBSA_pw_table_20_10_av.csv) [**CR6261_F54A_interactions_control.csv**](test/CR6261_F54A_interactions_control.csv) \ [**FINAL_DECOMP_MMPBSA_F54A_pw_table_20_10_av.csv**](test/FINAL_DECOMP_MMPBSA_F54A_pw_table_20_10_av.csv) 300 [**CR6261_F54A_changed_interactions.pdf**](docs/CR6261_F54A_changed_interactions.pdf) \ [**CR6261_F54A_changed_interactions.csv**](docs/CR6261_F54A_changed_interactions.csv)
+python DrawInteractions.py -o -x -c [**FINAL_DECOMP_MMPBSA_pw_table_20_10_av.csv**](test/FINAL_DECOMP_MMPBSA_pw_table_20_10_av.csv) [**CR6261_F54A_interactions_control.csv**](test/CR6261_F54A_interactions_control.csv) \ [**FINAL_DECOMP_MMPBSA_F54A_pw_table_20_10_av.csv**](test/FINAL_DECOMP_MMPBSA_F54A_pw_table_20_10_av.csv) 300 [**CR6261_F54A_changed_interactions.pdf**](CR6261_F54A_changed_interactions.pdf) \ [**CR6261_F54A_changed_interactions.csv**](CR6261_F54A_changed_interactions.csv)
 
 ![Image](https://rawgit.com/williamdlees/AmberUtils/master/docs/CR6261_F54A_changed_interactions.png)
 

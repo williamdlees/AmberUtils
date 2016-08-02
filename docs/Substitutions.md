@@ -8,18 +8,18 @@ Often it is necessary to model part of a loop which is not reported in the cryst
 
 The following steps can be used to insert the modelled region into the structure file:
 
-1. Use [**NumberRes**](docs/PrepTools.md/numberres) to renumber the chain, such that the residues in the modelled region are correctly numbered. If any of these residues has an insertion code, this will require some manual editing.
+1. Use [**NumberRes**](PrepTools.md/numberres) to renumber the chain, such that the residues in the modelled region are correctly numbered. If any of these residues has an insertion code, this will require some manual editing.
 2. Use ReplaceRes to replace/insert the modelled region into the original file. Check the output and confirm that it matches expectations.
 3. Check the structure in a PDB viewer to ensure that there are no discontinuities.
 
 ## Residue substitutions with no insertions
 
-You may wish to substitute one (or a small number) of residues in the structure. This can be performed as above, except that in this case, as there are no insertions, [**RelabelChains**](docs/PrepTools.md/relabelchains) can be used in place of [**NumberRes**](docs/PrepTools.md/numberres). The advantage of using RelabelChains is that it will automatically adopt the correct numbering, including numbering of insertion residues (e.g. 100A, 100B). It will also automatically revert to the Amber naming of HIS and CIS residues if any of these lie within the modelled region - although you will need to determine the appropriate protonation if you introduce a HIS residue.
+You may wish to substitute one (or a small number) of residues in the structure. This can be performed as above, except that in this case, as there are no insertions, [**RelabelChains**](PrepTools.md/relabelchains) can be used in place of [**NumberRes**](PrepTools.md/numberres). The advantage of using RelabelChains is that it will automatically adopt the correct numbering, including numbering of insertion residues (e.g. 100A, 100B). It will also automatically revert to the Amber naming of HIS and CIS residues if any of these lie within the modelled region - although you will need to determine the appropriate protonation if you introduce a HIS residue.
 
 The steps are very similar to the above:
 
-1. Use [**RelabelChains**](docs/PrepTools.md/relabelchains) to renumber the chain emitted by Modeller.
-2. Use [**ReplaceRes**](docs/PrepTools.md/replaceres) to replace/insert the modelled region into the original file. Check the output and confirm that it matches expectations.
+1. Use [**RelabelChains**](PrepTools.md/relabelchains) to renumber the chain emitted by Modeller.
+2. Use [**ReplaceRes**](PrepTools.md/replaceres) to replace/insert the modelled region into the original file. Check the output and confirm that it matches expectations.
 3. Check the structure in a PDB viewer to ensure that there are no discontinuities.
  
 
