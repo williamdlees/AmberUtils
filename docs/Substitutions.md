@@ -9,7 +9,7 @@ Often it is necessary to model part of a loop which is not reported in the cryst
 The following steps can be used to insert the modelled region into the structure file:
 
 1. Use [**NumberRes**](Preptools.md/#numberres) to renumber the chain, such that the residues in the modelled region are correctly numbered. If any of these residues has an insertion code, this will require some manual editing.
-2. Use ReplaceRes to replace/insert the modelled region into the original file. Check the output and confirm that it matches expectations.
+2. Use [**ReplaceRes**](Preptools.md/#replaceres) to replace/insert the modelled region into the original file. Check the output and confirm that it matches expectations.
 3. Check the structure in a PDB viewer to ensure that there are no discontinuities.
 
 ## Residue substitutions with no insertions
