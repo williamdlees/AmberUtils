@@ -119,7 +119,7 @@ Column Header|Meaning
 -------------|-------
 Col|number of the column in which this residue should be placed (1,2,3..)
 Id|identifier of this residue in the decomp table. Can be 'Gap' to create a gap between residues
-Legend|legend for this residue in the interaction chart. + at the start of the Legend will force the residue to be shown even if it has no interaction energy and -o is specified.
+Legend|legend for this residue in the interaction chart. + at the start of the Legend will force the residue to be shown even if it has no interaction energy and -o is specified. The legend must contain a number, representing the residue number to display. It may additionally contain letters, which are assumed to represent the residue code. If no letters are included, a single letter residue code is deduced from the Id field.
 Fill|The colour for the residue on the interaction chart. This can be 'Hydro' to use the built-in hydrophobicity scale, or any colour specifier supported by matplotlib (e.g. 'g', 'green', '#00FFFF').
 
 The built-in hydrophobicity scale is as follows:
