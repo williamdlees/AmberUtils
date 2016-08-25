@@ -120,16 +120,8 @@ def main(argv):
     # Remove interactions within a single column, if requested
 
     if args.omit_same_col:
-        res_with_energy = []
-        new_energies = {}
-        for k, v in energies.items():
-            (r1, r2, energy) = v
-            if find_col(r1, cols, col_ids) != find_col(r2, cols, col_ids):
-                new_energies[k] = v
-                for r in (r1, r2):
-                    if r not in res_with_energy:
-                        res_with_energy.append(r)
-        energies = new_energies
+        energies, res_with_energy = remove_single_column(col_ids, cols, energies)
+        comp_energies, comp_res_with_energy = remove_single_column(col_ids, cols, comp_energies)
 
     # If there's a compare file, only keep the energies that change more than the threshold
     
@@ -178,6 +170,20 @@ def main(argv):
     locations = plot_interactions(col_ids, cols, ctx, energies, hbonds, surface, negatives)
 
     write_summary_file(args.summary, col_ids, cols, energies, locations)
+
+
+def remove_single_column(col_ids, cols, energies):
+    res_with_energy = []
+    new_energies = {}
+    for k, v in energies.items():
+        (r1, r2, energy) = v
+        if find_col(r1, cols, col_ids) != find_col(r2, cols, col_ids):
+            new_energies[k] = v
+            for r in (r1, r2):
+                if r not in res_with_energy:
+                    res_with_energy.append(r)
+    energies = new_energies
+    return energies, res_with_energy
 
 
 def write_summary_file(summary, col_ids, cols, energies, locations):
@@ -326,6 +332,10 @@ def draw_residue(ctx, x, y, text, colour):
 def connect_residue(ctx, loc1, loc2, width, colour, dash):
     (x1, y1) = loc1
     (x2, y2) = loc2
+    
+    if x1 == x2:
+        pass
+    
     if x1 > x2:
         (x1, y1, x2, y2) = (x2, y2, x1, y1)
         
