@@ -121,7 +121,8 @@ def main(argv):
 
     if args.omit_same_col:
         energies, res_with_energy = remove_single_column(col_ids, cols, energies)
-        comp_energies, comp_res_with_energy = remove_single_column(col_ids, cols, comp_energies)
+        if args.compare_file:
+            comp_energies, comp_res_with_energy = remove_single_column(col_ids, cols, comp_energies)
 
     # If there's a compare file, only keep the energies that change more than the threshold
     
