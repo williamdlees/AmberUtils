@@ -68,7 +68,7 @@ def main(argv):
         plt.plot(xs, results_u, linestyle='--', color='g')
         plt.plot(xs, results_l, linestyle='--', color='g')
         plt.xlabel(u'Samples', fontproperties=font)
-        plt.ylabel(u'\u0394G (kCal/M)', fontproperties=font)  
+        plt.ylabel(u'\u0394G (kcal/mol)', fontproperties=font)  
         plt.savefig(args.trendfile)
     
     pdmeans = Series(mean_results)
@@ -77,7 +77,7 @@ def main(argv):
     
     plt.xlim(lim_l, lim_l+5)
     plt.ylim(0, 900)
-    plt.xlabel(u'Bootstrapped mean \u0394G (kCal/M)', fontproperties=font)
+    plt.xlabel(u'Bootstrapped mean \u0394G (kcal/mol)', fontproperties=font)
     plt.ylabel(u'Frequency', fontproperties=font)  
     plt.hist(pdmeans, bins=50)
     plt.savefig(args.distfile)

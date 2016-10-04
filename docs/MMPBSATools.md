@@ -55,7 +55,7 @@ CalcBounds determines the format to use for the graphics file from the extension
 	  outfile                          output file
 	
 	optional arguments:
-	  -t <threshold>      significance threshold (default 1.0 kcal/Mol)
+	  -t <threshold>      significance threshold (default 1.0 kcal/mol)
 	  -h, --help          show this help message and exit
 	
 The pairwise energy decompositions should be created by MMPBSA.py with `&decomp` and `idecomp=3 or 4` in the input file. If more than one file is provided, they are assumed to cover the same residues, but the residue numbers are not checked: this allows results from multiple receptor/ligand pairs to be accumulated. Delta-G values are averaged across the files. Only delta-G values with an absolute value exceeding the significance threshold are added: others are set to zero. 
@@ -102,7 +102,7 @@ The pairwise energy decompositions should be created by MMPBSA.py with `&decomp`
 	                        only display interactions that differ from those in
 	                        this file
 	  -t COMPARE_THRESH, --compare_thresh COMPARE_THRESH
-	                        threshold for comparison (default 0.5 kcal/Mol)
+	                        threshold for comparison (default 0.5 kcal/mol)
 	  -x, --omit_same_col   do not show interactions between residues in the same
                         column
 Draws an interaction plot similar to the example below, in which delta-G values taken from `decomp` 

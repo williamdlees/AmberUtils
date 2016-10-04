@@ -90,7 +90,7 @@ def main(argv):
     parser.add_argument('summary', help='summary file (CSV)')
     parser.add_argument('-o', '--omit_none', help='omit residues with no significant interaction energy', action='store_true')
     parser.add_argument('-c', '--compare_file', help='only display interactions that differ from those in this file')
-    parser.add_argument('-t', '--compare_thresh', help='threshold for comparison (default 0.5 kcal/Mol)')
+    parser.add_argument('-t', '--compare_thresh', help='threshold for comparison (default 0.5 kcal/mol)')
     parser.add_argument('-x', '--omit_same_col', help='do not show interactions between residues in the same column', action='store_true')
     args = parser.parse_args()
     

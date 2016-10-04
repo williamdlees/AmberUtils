@@ -48,7 +48,7 @@ def main(argv):
         print '  infile1 [infile2 ... infilen]    one or more input file names'
         print '  outfile                          output file\n'
         print 'optional arguments:'
-        print '  -t <threshold>      significance threshold (default 1.0 kcal/Mol)'
+        print '  -t <threshold>      significance threshold (default 1.0 kcal/mol)'
         print '  -h, --help          show this help message and exit'
         sys.exit(0)
     else:
