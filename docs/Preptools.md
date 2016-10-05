@@ -17,7 +17,7 @@ Change the name of residues as specified in a control file
 	optional arguments:
 	  -h, --help  show this help message and exit
 
-The control file should has one line per residue to be changed. Each line specifies the residue number, chain id,
+The control file should have one line per residue to be changed. Each line specifies the residue number, chain id,
 and residue name to be used, separated by a space. Example:
 
 	212 I HIE
