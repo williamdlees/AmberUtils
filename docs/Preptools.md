@@ -1,6 +1,6 @@
 # Tools for Structure Preparation
 
-This is a collection of tools for preparing PBB files for MD simulation.
+This is a collection of tools for preparing PDB files for MD simulation.
 
 ## ConvertRes
 
