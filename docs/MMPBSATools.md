@@ -44,7 +44,7 @@ CalcBounds determines the format to use for the graphics file from the extension
 
 ## PairwiseDecompTable
 
-	usage: PairwiseDecompTable.py [-h] <input files> <output file>.
+	usage: PairwiseDecompTable.py [-h] [-t THRESHOLD] <input files> <output file>.
 	
 	Create a pairwise table of total residue-residue interaction energies from MMPBSA.py output
 	If there are multiple tables, they are assumed to represent the same residues (possibly 
@@ -55,7 +55,7 @@ CalcBounds determines the format to use for the graphics file from the extension
 	  outfile                          output file
 	
 	optional arguments:
-	  -t <threshold>      significance threshold (default 1.0 kcal/mol)
+	  -t THRESHOLD      significance threshold (default 1.0 kcal/mol)
 	  -h, --help          show this help message and exit
 	
 The pairwise energy decompositions should be created by MMPBSA.py with `&decomp` and `idecomp=3 or 4` in the input file. If more than one file is provided, they are assumed to cover the same residues, but the residue numbers are not checked: this allows results from multiple receptor/ligand pairs to be accumulated. Delta-G values are averaged across the files. Only delta-G values with an absolute value exceeding the significance threshold are added: others are set to zero. 
