@@ -118,7 +118,7 @@ and residue name to be used, separated by a space. Example:
 	                        reference, if found
 
 RelabelChains can be used both to relabel all the chains from an Amber trajectory file so that they match
-the reference PDB file, and to relabel the residues in a single chain produced, for example, by Modeller.
+the reference PDB file, and to relabel the residues in a single chain produced, for example, by Modeller. Resiude numbers are changed to reflect the numbering of the input file, and the chain identifier, if provided, is inserted or updated.
 See [**this page**](Substitutions.md) for typical usage scenarios.
 
 ## ReplaceRes
