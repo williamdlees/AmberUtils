@@ -41,6 +41,10 @@ and residue name to be used, separated by a space. Example:
 	
 	optional arguments:
 	  -h, --help  show this help message and exit
+	  
+ResToAmber assumes that histidines in the PDB file are correctly protonated (that is, the hydrogen atoms in the file correctly reflect the protonation state). MolProbity can be used if necessary to achieve this.
+
+The control file produced by ResToAmber can be provided to ConvertRes, which will make the necessary changes to the PDB file.
 
 ## MakeConects
 
