@@ -118,11 +118,15 @@ The control file produced by ResToAmber can be provided to ConvertRes, which wil
 	  -h, --help            show this help message and exit
 	  -c CHAIN, --chain CHAIN
 	                        unlabelled file contains the specified chain only
+      -d, --delete_unreferenced
+                        delete records found past the end of the reference
+                        file
 	  -r, --replace_md_res  replace CIS, HIS in file with CYX, HID etc in
 	                        reference, if found
 
+
 RelabelChains can be used both to relabel all the chains from an Amber trajectory file so that they match
-the reference PDB file, and to relabel the residues in a single chain produced, for example, by Modeller. Resiude numbers are changed to reflect the numbering of the input file, and the chain identifier, if provided, is inserted or updated.
+the reference PDB file, and to relabel the residues in a single chain produced, for example, by Modeller. Residue numbers are changed to reflect the numbering of the input file, and the chain identifier, if provided, is inserted or updated.
 See [**this page**](Substitutions.md) for typical usage scenarios.
 
 ## ReplaceRes
