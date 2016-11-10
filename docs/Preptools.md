@@ -1,6 +1,6 @@
 # Tools for Structure Preparation
 
-This is a collection of tools for preparing PBB files for MD simulation.
+This is a collection of tools for preparing PDB files for MD simulation.
 
 ## ConvertRes
 
@@ -17,7 +17,7 @@ Change the name of residues as specified in a control file
 	optional arguments:
 	  -h, --help  show this help message and exit
 
-The control file should has one line per residue to be changed. Each line specifies the residue number, chain id,
+The control file should have one line per residue to be changed. Each line specifies the residue number, chain id,
 and residue name to be used, separated by a space. Example:
 
 	212 I HIE
@@ -41,6 +41,10 @@ and residue name to be used, separated by a space. Example:
 	
 	optional arguments:
 	  -h, --help  show this help message and exit
+	  
+ResToAmber assumes that histidines in the PDB file are correctly protonated (that is, the hydrogen atoms in the file correctly reflect the protonation state). MolProbity can be used if necessary to achieve this.
+
+The control file produced by ResToAmber can be provided to ConvertRes, which will make the necessary changes to the PDB file.
 
 ## MakeConects
 
@@ -118,7 +122,7 @@ and residue name to be used, separated by a space. Example:
 	                        reference, if found
 
 RelabelChains can be used both to relabel all the chains from an Amber trajectory file so that they match
-the reference PDB file, and to relabel the residues in a single chain produced, for example, by Modeller.
+the reference PDB file, and to relabel the residues in a single chain produced, for example, by Modeller. Resiude numbers are changed to reflect the numbering of the input file, and the chain identifier, if provided, is inserted or updated.
 See [**this page**](Substitutions.md) for typical usage scenarios.
 
 ## ReplaceRes
