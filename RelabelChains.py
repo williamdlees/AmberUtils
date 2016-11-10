@@ -30,6 +30,7 @@ def main(argv):
     parser.add_argument('reference', help='reference file, including chain labels')
     parser.add_argument('-c', '--chain', help='unlabelled file contains the specified chain only')
     parser.add_argument('-r', '--replace_md_res', help='replace CIS, HIS in file with CYX, HID etc in reference, if found', action='store_true')
+    parser.add_argument('-d', '--delete_unreferenced', help='delete records found past the end of the reference file', action='store_true')
     args = parser.parse_args()
     
     res = []
@@ -90,8 +91,12 @@ def main(argv):
                     line = "".join(l)            
                 fo.write(line)
         except StopIteration:
-            error = '\nWarning: input file contains additional residues past the end of the reference file (possibly solvents): these have been omitted.'
-            
+            if args.delete_unreferenced:
+                error = '\nInput file contains additional residues past the end of the reference file (possibly solvents): these have been omitted.'
+            else:
+                for line in fi:
+                    fo.write(line)
+
     print "%5s %11s %8s %10s %8s" % (old_chain, ref_chain_startnum, old_ref_resnum, inf_chain_startnum, old_resnum)
     
     if error:
