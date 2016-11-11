@@ -18,3 +18,7 @@ CR6261_WT_interactions.pdf
 CR6261_WT_interactions.csv
 CR6261_F54A_changed_interactions.pdf
 CR6261_F54A_changed_interactions.csv
+sub.*
+*.ali
+completed.pdb
+restored.pdb

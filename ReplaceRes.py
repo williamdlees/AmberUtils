@@ -38,8 +38,17 @@ def main(argv):
         sys.exit(0)
 
     chain_id = args.chain
-    
-    # Fix up first and last ids to be right-justified 4-digit residue numbers followed by insertion letter or space 
+
+    # Determine the ATOM ids of SG atoms in CYX residues so that we can use them later if any are involved in insertions
+    # This preserves the integrity of CONECT records
+
+    cyx_sg_atoms = {}
+    with open(args.infile, "r") as f:
+        for line in f:
+            if len(line) > 20 and line[0:4] == "ATOM" and line[17:20] == "CYX" and "SG" in line[12:16]:
+                cyx_sg_atoms["%s %s" % (line[21], line[22:27])] = line[6:11]
+
+    # Fix up first and last ids to be right-justified 4-digit residue numbers followed by insertion letter or space
     
     first_id = args.startnum
     if first_id[-1:].isdigit:
@@ -93,7 +102,13 @@ def main(argv):
                                         print "%s %s %s -> %s" % (rep_resnum, chain, resname, rep_resname)
                                 else:
                                     print "%s %s gap -> %s" % (rep_resnum, chain, rep_resname)
-                            rep_line = rep_line[:6] + "%5d" % 0 + rep_line[11:21] + chain + rep_line[22:]
+
+                            if "SG" in rep_line[12:16] and "%s %s" % (rep_line[21], rep_line[22:27]) in cyx_sg_atoms:
+                                atom_num = cyx_sg_atoms["%s %s" % (rep_line[21], rep_line[22:27])]
+                            else:
+                                atom_num = "%5d" % 0
+
+                            rep_line = rep_line[:6] + atom_num + rep_line[11:21] + chain + rep_line[22:]
                             of.write(rep_line)
                         rep_line = rf.readline()
                         if rep_line[0:4] == "ATOM":
