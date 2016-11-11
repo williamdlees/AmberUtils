@@ -39,14 +39,18 @@ def main(argv):
 
     chain_id = args.chain
 
-    # Determine the ATOM ids of SG atoms in CYX residues so that we can use them later if any are involved in insertions
-    # This preserves the integrity of CONECT records
+    # Determine the ATOM ids of SG and atoms in CYX/CYS residues so that we can use them later if any are involved in insertions
+    # This preserves the integrity of disulphide bond CONECT records
 
     cyx_sg_atoms = {}
+    cyx_cb_atoms = {}
     with open(args.infile, "r") as f:
         for line in f:
-            if len(line) > 20 and line[0:4] == "ATOM" and line[17:20] == "CYX" and "SG" in line[12:16]:
-                cyx_sg_atoms["%s %s" % (line[21], line[22:27])] = line[6:11]
+            if len(line) > 20 and line[0:4] == "ATOM" and (line[17:20] == "CYX" or line[17:20] == "CYX"):
+                if "SG" in line[12:16]:
+                    cyx_sg_atoms["%s %s" % (line[21], line[22:27])] = line[6:11]
+                elif "CB" in line[12:16]:
+                    cyx_cb_atoms["%s %s" % (line[21], line[22:27])] = line[6:11]
 
     # Fix up first and last ids to be right-justified 4-digit residue numbers followed by insertion letter or space
     
@@ -105,6 +109,8 @@ def main(argv):
 
                             if "SG" in rep_line[12:16] and "%s %s" % (rep_line[21], rep_line[22:27]) in cyx_sg_atoms:
                                 atom_num = cyx_sg_atoms["%s %s" % (rep_line[21], rep_line[22:27])]
+                            elif "CB" in rep_line[12:16] and "%s %s" % (rep_line[21], rep_line[22:27]) in cyx_cb_atoms:
+                                atom_num = cyx_cb_atoms["%s %s" % (rep_line[21], rep_line[22:27])]
                             else:
                                 atom_num = "%5d" % 0
 
