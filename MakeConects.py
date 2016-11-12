@@ -32,7 +32,9 @@ def main(argv):
 
     ssbonds = []
     atoms = {}
-    
+
+    written = False
+
     with open(args.infile, "r") as f, open(args.outfile, "w") as of:
         for line in f:
             line = line.strip()
@@ -59,8 +61,20 @@ def main(argv):
                             of.write("CONECT%s%s\n" % (atoms[r2], atoms[r1]))
                         else:
                             print 'Warning: atoms corresponding to SSBOND(%s,%s) were not found.' % (r1, r2)
+                written = True
             
             of.write(line + '\n')
+
+        if not written:
+            print 'Warning: END record was not found. CONECTS will be written at the end of the file.'
+
+
+            for r1, r2 in ssbonds:
+                if r1 in atoms and r2 in atoms:
+                    of.write("CONECT%s%s\n" % (atoms[r1], atoms[r2]))
+                    of.write("CONECT%s%s\n" % (atoms[r2], atoms[r1]))
+                else:
+                    print 'Warning: atoms corresponding to SSBOND(%s,%s) were not found.' % (r1, r2)
 
 if __name__ == "__main__":
     main(sys.argv)
