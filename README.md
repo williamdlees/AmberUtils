@@ -3,7 +3,7 @@ A collection of small utilities in Python that I have found useful when working 
 
 ## News
 
-13th November 2016:  Added two new tools: [**AutoSub**](docs/Preptools.md/#autosub), which automates the use of Modeller to make substitutions, and [**RenameChain**](docs/Preptools.md/#renamechain), which changes the ID of a chain in a PDB file. Expanded the documentation, and provided [**Example commands to effect a substitution**](Preptools.md/#relabelchains).
+13th November 2016:  Added two new tools: [**AutoSub**](docs/Preptools.md/#autosub), which automates the use of Modeller to make substitutions, and [**RenameChain**](docs/Preptools.md/#renamechain), which changes the ID of a chain in a PDB file. Expanded the documentation, and provided [**example commands**](Substitutions.md/#Example commands to effect a substitution)  to effect a substitution.
 
 ## Summary
 

@@ -30,7 +30,7 @@ Substitutions are specified using single AA codes. Multiple substitutions may be
 
 Running Modeller creates a large set of files (including the PDB files for each generated model). These are retained for reference. It is therefore advisable to run AutoSub in a dedicated/scratch directory.
 
-See [**example usage**](Preptools.md/#relabelchains) in a pipeline.
+See [**example usage**](Substitutions.md/#example-commands-to-effect-a-substitution) in a pipeline.
 
 ## ConvertRes
 
