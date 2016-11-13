@@ -93,6 +93,7 @@ def main(argv):
         except StopIteration:
             if args.delete_unreferenced:
                 error = '\nInput file contains additional residues past the end of the reference file (possibly solvents): these have been omitted.'
+                fo.write('END')
             else:
                 for line in fi:
                     fo.write(line)
