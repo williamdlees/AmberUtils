@@ -1,5 +1,11 @@
 # AmberUtils - Utilities to assist with Amber Molecular Dynamics
-A collection of small utilities in Python that I have found useful when working with [**Amber**](http://ambermd.org). The utilities have been tested with Amber14 and AmberTools15. 
+A collection of small utilities in Python that I have found useful when working with [**Amber**](http://ambermd.org). The utilities have been tested with Amber14 and AmberTools15.
+
+## News
+
+13th November 2016:  Added two new tools: [**AutoSub**](docs/Preptools.md/#autosub), which automates the use of Modeller to make substitutions, and [**RenameChain**](docs/Preptools.md/#renamechain), which changes the ID of a chain in a PDB file. Expanded the documentation, and provided [**example usage**](Preptools.md/#relabelchains)of the toolset to effect substitutions.
+
+## Summary
 
 [**Tools for Structure Preparation**](#tools-for-structure-preparation)<br>
 [**Tools for Trajectory Analysis**](#tools-for-trajectory-analysis)<br>
