@@ -2,6 +2,36 @@
 
 This is a collection of tools for preparing PDB files for MD simulation.
 
+## AutoSub
+
+Perform a substitution and find the best generated model of the chain, using
+[**Modeller**](https://salilab.org/modeller/). Requires Modeller to be installed. AutoSub uses the Python bindings for Modeller, which should be correctly configured when Modeller is installed. You can verify this by opening  an interactive Python session and typing 'import modeller'. If no error message is displayed, the Python binding is configured. 
+
+	positional arguments:
+	  pdbfile            input file (PDB)
+	  chain              chain ID
+	  subs               substitutions (residue, number, ..)
+	  overlap            number of overlap residues to remodel either side of
+	                     substitutions
+	  models             number of models to build
+	  outfile            output file (PDB)
+
+	optional arguments:
+	  -h, --help         show this help message and exit
+	  -r, --restore_res  restore Amber residue names to PDB defaults before
+	                     running Modeller
+	  -v, --verbose      verbose output
+
+Substitutions are specified using single AA codes. Multiple substitutions may be specified by separating each substitution with a comma, for example `K102A,K104D,N76G`. All substitutions must be from the same chain.
+
+`overlap` specifies the number of residues to remodel on either side of the substitutions themselves: with the substitutions above, specifying an overlap of 5 would cause residues 71 to 109 to be remodelled, while atoms in other residues would retain their positions. Note that specifying disjoint substitutions may cause a large region of the chain to be remodelled, with potential impacts on accuracy. 
+
+`models` specifies the number of models to build. AutoSub will select from these the model with the best (lowest) objective function value.
+
+Running Modeller creates a large set of files (including the PDB files for each generated model). These are retained for reference. It is therefore advisable to run AutoSub in a dedicated/scratch directory.
+
+See [**example usage**](Preptools.md/#relabelchains) in a pipeline.
+
 ## ConvertRes
 
 
@@ -152,3 +182,19 @@ See [**this page**](Substitutions.md) for typical usage scenarios.
 The ATOM records for the specified range of residues are copied from the replacement file, replacing any ATOM records for those residues in the input file. As ANISOU records are not used in MD simulation and can make the ATOM records harder to read and check, an option allows them to be removed.
 
 The tool will report any residue substitutions that are made as a result of the replacement (it will not report changes in atomic co-ordinates). It will warn if histidines are inserted, as the protonationn may need to be reviewed. See [**this page**](Substitutions.md) for typical usage scenarios.
+
+## RenameChain
+
+	usage: RenameChain.py [-h] infile outfile old_id new_id
+
+	Rename (re-letter) the specified chain. If there are multiple chains with the
+	same id in the pdb file, only the first is renamed.
+
+	positional arguments:
+	  infile      input file (PDB format)
+	  outfile     output file (PDB format)
+	  old_id      current chain id (single letter)
+	  new_id      desired chain id (single letter)
+
+	optional arguments:
+	  -h, --help  show this help message and exit
