@@ -97,9 +97,9 @@ def main(argv):
                         if rep_line[0:4] == "ATOM":
                             resname = line[17:20]
                             if resname == "HIS":
-                                print "Warning: replacing HIS residue at %d: fix protonation." % resnum
+                                print "Warning: replacing HIS residue at %s: fix protonation." % resnum
                             if rep_resname == "HIS":
-                                print "Warning: inserting HIS residue at %d: fix protonation." % resnum
+                                print "Warning: inserting HIS residue at %s: fix protonation." % resnum
                             if rep_resnum != old_rep_resnum:
                                 if rep_resnum == resnum:
                                     if resname != rep_resname:
