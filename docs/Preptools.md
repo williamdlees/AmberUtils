@@ -7,7 +7,7 @@ This is a collection of tools for preparing PDB files for MD simulation.
 Perform a substitution and find the best generated model of the chain, using
 [**Modeller**](https://salilab.org/modeller/). Requires Modeller to be installed. AutoSub uses the Python bindings for Modeller, which should be correctly configured when Modeller is installed. You can verify this by opening  an interactive Python session and typing 'import modeller'. If no error message is displayed, the Python binding is configured. 
 
-	usage: AutoSub.py [-h] [-l LOOPMODELS] [-r] [-v]
+	usage: AutoSub.py [-h] [-l LOOPMODELS] [-r] [-v] pdbfile chain subs overlap models outfile
 	
 	positional arguments:
 	  pdbfile            input file (PDB)
