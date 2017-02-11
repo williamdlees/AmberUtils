@@ -40,19 +40,19 @@ The following script shows how the tools can be used to effect a simple substitu
 	# either side of the substitution. Repeat the modelling 20 times and select the resulting chain with the
 	# lowest objective function value.
 
-	python ../scripts/AutoSub.py 1dqj_refined.pdb C D101A 5 20 sub.pdb -r
+	python AutoSub.py 1dqj_refined.pdb C D101A 5 20 sub.pdb -r
 	
 	# Relabel the ensuing chain with the chain ID, revert unsubstituted residues to Amber names where necessary
 	
-	python ~/AmberUtils/RelabelChains.py sub.pdb rel.pdb 1dqj_refined.pdb -r -c C
+	python RelabelChains.py sub.pdb rel.pdb 1dqj_refined.pdb -r -c C
 	
 	# Insert required residues from the relabelled chain into a complete file of the structure
 	
-	python ~/AmberUtils/ReplaceRes.py 1dqj_refined.pdb ins.pdb rel.pdb 1 96 106
+	python ReplaceRes.py 1dqj_refined.pdb ins.pdb rel.pdb 1 96 106
 	
 	# Check any included CONECTS refer to ATOMS present in the file, and renumber ATOM ids sequentially
 	
-	python ~/AmberUtils/RenumberAtoms.py ins.pdb 1dqj_C_D101A.pdb
+	python RenumberAtoms.py ins.pdb 1dqj_C_D101A.pdb
  
  
 
