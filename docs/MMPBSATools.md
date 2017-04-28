@@ -11,7 +11,8 @@
 	  calc        gb (for GBSA) or pb (for PBSA)
 	
 	optional arguments:
-	  -h, --help  show this help message and exit
+	  -p, --prefix  prefix for MMPBSA data files (default _MMPBSA_)
+	  -h, --help    show this help message and exit
 
 The script should be run after the MMPBSA.py calculation is complete. The `keep_files` variable in the `&general` section of the MMPBSA.py input file must be set to 1 or 2 in order to create the data required by the API.
 
