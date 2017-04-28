@@ -22,13 +22,15 @@ def main(argv):
     parser = argparse.ArgumentParser(description='Extract frame-by-frame MMPSA/MMGBSA Energy Totals')
     parser.add_argument('outfile', help='output file (CSV)')
     parser.add_argument('calc', help='gb (for GBSA) or pb (for PBSA)')
+    parser.add_argument('-p', '--prefix', help='prefix for MMPBSA files (default _MMPBSA_)')
     args = parser.parse_args()
     
     if args.calc not in ['gb', 'pb']:
         print 'calc must be either "gb" or "pb"'
         quit()
     
-    data=MMPBSA_API.load_mmpbsa_info('_MMPBSA_info')
+    prefix = '_MMPBSA_' if args.prefix is None else args.prefix
+    data=MMPBSA_API.load_mmpbsa_info(prefix + 'info')
     head = ['TOTAL']
     
     with open(args.outfile, 'w') as csvfile:
