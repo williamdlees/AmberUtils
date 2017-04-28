@@ -29,7 +29,7 @@ mean_results = []
 
 font = {'family' : 'sans-serif',
         'weight' : 'normal',
-        'size'   : 18}
+        'size'   : 22}
 
 matplotlib.rc('font', **font)
 
@@ -46,7 +46,7 @@ def main(argv):
     
     font = FontProperties()
     font.set_name('Calibri')
-    font.set_size(18)
+    font.set_size(28)
     
     means = read_csv(args.infile)
     results_m = []
@@ -67,8 +67,10 @@ def main(argv):
         plt.plot(xs, results_m, color='g')
         plt.plot(xs, results_u, linestyle='--', color='g')
         plt.plot(xs, results_l, linestyle='--', color='g')
+        plt.locator_params(nbins=5, axis='y')
         plt.xlabel(u'Samples', fontproperties=font)
         plt.ylabel(u'\u0394G (kcal/mol)', fontproperties=font)  
+        plt.tight_layout()
         plt.savefig(args.trendfile)
     
     pdmeans = Series(mean_results)
@@ -77,6 +79,7 @@ def main(argv):
     
     plt.xlim(lim_l, lim_l+5)
     plt.ylim(0, 900)
+    plt.locator_params(nbins=5, axis='y')
     plt.xlabel(u'Bootstrapped mean \u0394G (kcal/mol)', fontproperties=font)
     plt.ylabel(u'Frequency', fontproperties=font)  
     plt.hist(pdmeans, bins=50)
