@@ -35,13 +35,15 @@ def main(argv):
     
     res = []
     old_resnum = -1
-    
+
+    # Read reference file
     with open(args.reference, "r") as rf:
         for line in rf:
             if line[0:6] == "ATOM  ":
                 resnum = line[22:27]
                 resname = line[17:20]
                 chain = line[21]
+                # Add each residue to the list exactly once
                 if resnum != old_resnum:
                     if args.chain is None or chain == args.chain:
                         res.append([resnum, resname, chain])
@@ -65,9 +67,15 @@ def main(argv):
                 if line[0:6] == "ATOM  ":
                     resnum = line[22:27]
                     resname = line[17:20]
+
+                    # For each residue, exactly once...
                     if resnum != old_resnum:
                         old_ref_resnum = ref_res[0] if ref_res else None
-                        ref_res = res_iter.next()                    
+
+                        # Find the corresponding reference residue
+                        ref_res = res_iter.next()
+
+                        # Track chain changes
                         if old_chain != ref_res[2]:
                             if old_chain != "": 
                                 print "%5s %11s %8s %10s %8s" % (old_chain, ref_chain_startnum, old_ref_resnum, inf_chain_startnum, old_resnum)
@@ -77,6 +85,13 @@ def main(argv):
                         old_resnum = resnum
     
                     l = list(line)
+
+                    # Here the algorithm expects that the infile and the reference file have the same ordering of the
+                    # residue names and just differ in their chain and residue numbering (this also means that the chain
+                    # ordering has to be the same and also that no new residues have been added in the ATOM records
+                    # which might be the case with modelled loops)
+                    # if there is a different order we output the following warnings or changes the resname to the pdb
+                    # convention
                     if resname != ref_res[1]:
                         if args.replace_md_res and resname == 'HIS' and ref_res[1] in ['HID', 'HIE']:
                             l[17:20] = ref_res[1]    
@@ -86,6 +101,8 @@ def main(argv):
                             if resnum != last_warning:
                                 print "Warning: at residue %s in infile, residue %s in infile differs from %s in reference." % (resnum, resname, ref_res[1])
                                 last_warning = resnum
+
+                    # Use reference residue number and chain
                     l[22:27] = ref_res[0]
                     l[21] = ref_res[2]
                     line = "".join(l)            
