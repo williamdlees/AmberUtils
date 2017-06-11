@@ -122,10 +122,15 @@ def main(argv):
                             old_rep_resnum = rep_resnum
                             rep_resnum = rep_line[22:27]
                     prev_resnum = resnum
+                    # Position input file at next residue (skip all remaining ATOM records of the input file)
                     while line and resnum == prev_resnum:
                         line = f.readline()
                         if line[0:4] == "ATOM":
                             resnum = line[22:27]
+                        # write records at the end of the specified replacement residue range (before we get a
+                        # new residue number from the next "ATOM" record) to preserve "TER", "ENDMDL", "MODEL" lines
+                        else:
+                            of.write(line)
             else:
                 if (not args.remove_anisou) or line[0:6] != "ANISOU": 
                     of.write(line)                
