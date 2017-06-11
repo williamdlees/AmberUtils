@@ -16,7 +16,7 @@
 # OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 
-from pandas import *
+import pandas
 import scipy
 import scikits.bootstrap as bootstrap
 import sys
@@ -24,6 +24,8 @@ import matplotlib
 import matplotlib.pyplot as plt
 from matplotlib.font_manager import FontProperties
 import argparse
+import numpy as np
+import csv
 
 mean_results = []
 
@@ -40,24 +42,37 @@ def main(argv):
     parser.add_argument('sumfile', help='summary file (text format)')
     parser.add_argument('trendfile', help='trend plot with confidence intervals (.png, .bmp, .pdf)')
     parser.add_argument('distfile', help='distribution plot of energy totals (.png, .bmp, .pdf)')
+    parser.add_argument('-c', '--column', help='name of column to use (default TOTALS)')
     args = parser.parse_args()
+    column = 'TOTALS' if not args.column else args.column
     
     global mean_results
     
     font = FontProperties()
     font.set_name('Calibri')
     font.set_size(28)
-    
-    means = read_csv(args.infile)
+
+    means = []
+    with open(args.infile) as infile:
+        reader = csv.DictReader(infile)
+        for row in reader:
+            if len(row[column]) > 0:
+                means.append(float(row[column]))
+
+    means = np.array(means)
+
     results_m = []
     results_u = []
     results_l = []
     xs = []
-    
+
     with open(args.sumfile, 'w') as fo:
-        for i in range(5, len(means)+5, 5):
+        for i in range(100, len(means)+100, 100):
+            if i >= 10000:
+                print('Stopping after 10000 values due to limitations in the bootstrap function.')
+                break
             mean_results = []
-            bounds = conf_intervals(means["TOTAL"][:i])
+            bounds = conf_intervals(means[:i])
             fo.write("%d mean %0.2f +%0.2f -%0.2f\n" % (i, bounds[0], bounds[1], bounds[2]))
             results_m.append(bounds[0])
             results_u.append(bounds[1]+bounds[0])
@@ -72,30 +87,28 @@ def main(argv):
         plt.ylabel(u'\u0394G (kcal/mol)', fontproperties=font)  
         plt.tight_layout()
         plt.savefig(args.trendfile)
-    
-    pdmeans = Series(mean_results)
-    
+
     lim_l = round(bounds[0] - 2.5, 0)
     
     plt.xlim(lim_l, lim_l+5)
     plt.ylim(0, 900)
     plt.locator_params(nbins=5, axis='y')
     plt.xlabel(u'Bootstrapped mean \u0394G (kcal/mol)', fontproperties=font)
-    plt.ylabel(u'Frequency', fontproperties=font)  
-    plt.hist(pdmeans, bins=50)
+    plt.ylabel(u'Frequency', fontproperties=font)
+    plt.hist(mean_results, bins=50)
     plt.savefig(args.distfile)
 
 
 def conf_intervals(data):
-	mean = scipy.mean(data)
-	CIs = bootstrap.ci(data=data, statfunction=mymean)
+	mean = np.average(data)
+	CIs = bootstrap.ci(data=data, statfunction=mymean, n_samples=10000)
 	ubound = CIs[1]-mean
 	lbound = CIs[0]-mean
 	return(mean, ubound, lbound)
-  
+
 def mymean(data):
     global mean_results
-    res = scipy.mean(data)
+    res = np.average(data)
     mean_results.append(res)
     return res
 
