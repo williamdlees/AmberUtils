@@ -33,7 +33,7 @@ def main(argv):
     
     with open(args.infile, "r") as f, open(args.outfile, "w") as of:
         for line in f:
-            if len(line) >= 13 and line[:6] == 'ATOM  ':
+            if len(line) >= 13 and (line[:6] == 'ATOM  ' or line[:6] == 'HETATM'):
                 oldnum = line[6:11]
                 if line[16] != ' ' and oldnum.strip() != '0' and oldnum in new_atom_nums: # alternate location
                     newnum = new_atom_nums[oldnum]
