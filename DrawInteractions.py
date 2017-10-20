@@ -1,3 +1,5 @@
+#! /usr/bin/env python
+
 # Copyright (c) 2015 William Lees
 
 # Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated
@@ -33,20 +35,22 @@ __docformat__ = "restructuredtext en"
 #        (e.g. 'g', 'green', '#00FFFF')
 
 
-import cairo
-import math
-import csv
-import matplotlib.colors as mc
-import sys
 import argparse
+import csv
+import math
+import sys
+
+import cairo
+import matplotlib.colors as mc
+from PIL import Image
 
 # Dimensions in pixels - can be altered at will, but the underlying software library does impose some limits on maximum sizes.
 
 WIDTH, HEIGHT = 1500,3000
 
-RES_RADIUS = 40
+RES_RADIUS = 60
 COL_SPACING = 400
-RES_Y_SPACING = 50
+RES_Y_SPACING = 80
 MARGIN = 100
 FONT_SIZE = 24
 DASH_SIZE = 10
@@ -92,14 +96,15 @@ def main(argv):
     parser.add_argument('-c', '--compare_file', help='only display interactions that differ from those in this file')
     parser.add_argument('-t', '--compare_thresh', help='threshold for comparison (default 0.5 kcal/mol)')
     parser.add_argument('-x', '--omit_same_col', help='do not show interactions between residues in the same column', action='store_true')
+    parser.add_argument('-l', '--add_title', help='add title to diagram')
+    parser.add_argument('-p', '--png', help='output as png image', action='store_true')
     args = parser.parse_args()
-    
+
     compare_thresh = 0.5 if args.compare_thresh is None else float(args.compare_thresh)
 
-    surface = cairo.PDFSurface(args.output, WIDTH, HEIGHT)  
+    surface = cairo.PDFSurface(args.output, WIDTH, HEIGHT)
     ctx = cairo.Context(surface)
     ctx.set_font_size(FONT_SIZE)
-
     cols = {}
     residue_ids = []
     col_ids = []
@@ -125,7 +130,7 @@ def main(argv):
             comp_energies, comp_res_with_energy = remove_single_column(col_ids, cols, comp_energies)
 
     # If there's a compare file, only keep the energies that change more than the threshold
-    
+
     negatives = []
 
     if args.compare_file:
@@ -168,7 +173,39 @@ def main(argv):
                     new_col.append(res)
                 cols[col_id] = new_col
 
+    global BIGGEST_CHANGE
+    if args.compare_file:
+        BIGGEST_CHANGE = get_biggest_change(new_energies)
+    else:
+        BIGGEST_CHANGE = 0.0
+
     locations = plot_interactions(col_ids, cols, ctx, energies, hbonds, surface, negatives)
+
+    if(args.add_title):
+        ctx.set_source_rgb(0, 0, 0)
+        ctx.move_to(100,80)
+        ctx.show_text(args.add_title)
+
+        subtitle = ""
+        subtitle = subtitle + "(" + args.compare_thresh + " kcal/mol"
+        if args.compare_file:
+            subtitle = subtitle + ", " + args.compare_file +")"
+        else:
+            subtitle = subtitle + ")"
+        ctx.set_font_size(FONT_SIZE-10)
+        ctx.move_to(100,95)
+        ctx.show_text(subtitle)
+
+    if args.png:
+        surface.write_to_png(args.output.split(".")[0] + ".png")
+        img = Image.open(args.output.split(".")[0] + ".png")
+        background = Image.new('RGBA', img.size, (255, 255, 255,1000))
+        out_image = Image.alpha_composite(background, img)
+        out_image = out_image.crop(img.getbbox())
+        out_image.save(args.output.split(".")[0] + ".png")
+
+    surface.finish()
+    surface.flush()
 
     write_summary_file(args.summary, col_ids, cols, energies, locations)
 
@@ -190,7 +227,7 @@ def remove_single_column(col_ids, cols, energies):
 def write_summary_file(summary, col_ids, cols, energies, locations):
     with open(summary, 'wb') as fo:
         writer = csv.writer(fo, delimiter=',')
-        writer.writerow(['Column', 'Residue', 'Total'])
+        writer.writerow(['Column', 'Chain', 'Residue', 'Total'])
         for col_id in col_ids:
             for res in cols[col_id]:
                 if 'Gap' not in res['Id']:
@@ -200,7 +237,7 @@ def write_summary_file(summary, col_ids, cols, energies, locations):
                         (r1, r2, e) = v
                         if (r1 == res['Id'] or r2 == res['Id']) and locations[r1][0] != locations[r2][0]:
                             total += e
-                    writer.writerow([col_id, legend, total])
+                    writer.writerow([col_id, res['Chain'], legend, total])
                 else:
                     writer.writerow(['', '', ''])
 
@@ -221,7 +258,7 @@ def plot_interactions(col_ids, cols, ctx, energies, hbonds, surface, negatives):
         for res in cols[col_id]:
             if 'Gap' not in res['Id']:
                 legend = res['Legend'].replace('+', '')
-                draw_residue(ctx, x, y, legend, res['Fill'])
+                draw_residue(ctx, x, y, legend, res['Fill'], res['Chain'])
             locations[res['Id']] = (x, y)
             y += RES_Y_SPACING
 
@@ -231,7 +268,6 @@ def plot_interactions(col_ids, cols, ctx, energies, hbonds, surface, negatives):
         colour = 'red' if r1 + r2 in hbonds else 'black'
         dashed = (r1 + r2 in negatives)
         connect_residue(ctx, locations[r1], locations[r2], abs(e), colour, dashed)
-    surface.finish()
     surface.flush()
     return locations
 
@@ -269,6 +305,7 @@ def read_decomp_file(decomp, energies, res_with_energy, residue_ids, is_compare_
                                 subs[res] = residue_id
                             else:
                                 print 'Warning: control file id %s does not agree with decomp table id %s' % (residue_id, res)
+
 
         for row in reader:
             res1 = row['Res']
@@ -312,7 +349,7 @@ def read_control_file(control, col_ids, cols, residue_ids):
             residue_ids.append(row['Id'])
 
 
-def draw_residue(ctx, x, y, text, colour):
+def draw_residue(ctx, x, y, text, colour, chain):
     ctx.set_source_rgb (*colour_residue(text, colour))
     ctx.save()
     ctx.translate(x, y)
@@ -322,18 +359,22 @@ def draw_residue(ctx, x, y, text, colour):
     ctx.restore()
     ctx.fill()
     ctx.set_source_rgb (0, 0, 0)
-    (x_bearing, y_bearing, add_width, height, x_advance, y_advance) = ctx.text_extents("I")
+    (x_bearing, y_bearing, add_width, height, x_advance, y_advance) = ctx.text_extents("W")
     (x_bearing, y_bearing, width, height, x_advance, y_advance) = ctx.text_extents(text)
     ctx.move_to(x-(width+add_width)/2, y+height/2)
-    ctx.show_text(text)
+    ctx.show_text(chain + ':' + text)
     #ctx.rectangle(x-width/2-2, y-height/2-2, width+4, height+4)
     ctx.stroke()
  
     
 def connect_residue(ctx, loc1, loc2, width, colour, dash):
+
     (x1, y1) = loc1
     (x2, y2) = loc2
-    
+
+
+
+
     if x1 == x2:
         pass
     
@@ -361,6 +402,13 @@ def connect_residue(ctx, loc1, loc2, width, colour, dash):
     ctx.set_source_rgb(*mc.colorConverter.to_rgb(colour)) 
     ctx.line_to(end_x, end_y)
     ctx.stroke()
+    # add label with value of change for largest chang
+    if width == math.fabs(BIGGEST_CHANGE):
+        ctx.set_source_rgb(0, 0, 0)
+        ctx.set_font_size(FONT_SIZE - 10)
+        x_bearing1, y_bearing1, width1, height1 = ctx.text_extents(str(BIGGEST_CHANGE))[:4]
+        ctx.move_to((x1 + x2 - (width1 + 15 / 2)) / 2, (y1 + y2 - (height1 + 5 / 2)) / 2)
+        ctx.show_text(str(BIGGEST_CHANGE))
     
     
 
@@ -427,6 +475,21 @@ def find_col(res, cols, col_ids):
             if r['Id'] == res:
                 return col_id
     return None
+
+def get_biggest_change(new_energies):
+    biggest = 0.0
+    smallest = 0.0
+    for item in new_energies.values():
+        if item[2] > biggest:
+            biggest = item[2]
+        if item[2] < smallest:
+            smallest = item[2]
+
+    if math.fabs(biggest) > math.fabs(smallest):
+        return biggest
+    else:
+        return smallest
+
 
 
 if __name__ == "__main__":
