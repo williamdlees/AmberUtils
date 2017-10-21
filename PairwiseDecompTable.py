@@ -24,6 +24,7 @@ import csv
 
 def main(argv):
     found_threshold = False
+    omit_zeroes = False
     threshold = 1.0
     infiles = []
     
@@ -31,6 +32,8 @@ def main(argv):
         for arg in argv[1:]:
             if arg == '-t':
                 found_threshold = True
+            elif arg == '-z':
+                omit_zeroes = True
             elif found_threshold:
                 threshold = float(arg)
                 found_threshold = False
@@ -49,6 +52,7 @@ def main(argv):
         print '  outfile                          output file\n'
         print 'optional arguments:'
         print '  -t <threshold>      significance threshold (default 1.0 kcal/mol)'
+        print '  -z                  omit columns or rows containing only zero values'
         print '  -h, --help          show this help message and exit'
         sys.exit(0)
     else:
@@ -88,17 +92,35 @@ def main(argv):
                         if firstfile:
                             values[row[0]] = {}
 
-                    if firstfile:
-                        values[row[0]][row[1]] = [float(row[17])]
-                    else:
-                        res0 = residues[fileresidues.index(row[0])]
-                        res1 = residues[fileresidues.index(row[1])]
-                        values[res0][res1].append(float(row[17]))
-                        
+                    try:
+                        if firstfile:
+                            values[row[0]][row[1]] = [float(row[17])]
+                        else:
+                            res0 = residues[fileresidues.index(row[0])]
+                            res1 = residues[fileresidues.index(row[1])]
+                            values[res0][res1].append(float(row[17]))
+                    except ValueError:
+                        print('Ignoring row: %s' % row)
+
                     lastres = row[0]
             
             firstfile = False
-                    
+
+    if omit_zeroes:
+        empty_res = []
+        for res1 in residues:
+            empty = True
+            for res2 in residues:
+                val = sum(values[res1][res2])/len(values[res1][res2])
+                if res1 != res2 and abs(val) >= threshold:
+                    empty = False
+                    break
+            if empty:
+                empty_res.append(res1)
+
+        for res in empty_res:
+            residues.remove(res)
+
     with open(outfile, "wb") as f:
         fieldnames = ['Res']
         fieldnames.extend(residues)
