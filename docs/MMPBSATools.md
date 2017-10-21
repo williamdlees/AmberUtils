@@ -58,9 +58,10 @@ CalcBounds determines the format to use for the graphics file from the extension
 	
 	optional arguments:
 	  -t THRESHOLD      significance threshold (default 1.0 kcal/mol)
+	  -z                omit columns or rows containing only zero values
 	  -h, --help          show this help message and exit
 	
-The pairwise energy decompositions should be created by MMPBSA.py with `&decomp` and `idecomp=3 or 4` in the input file. If more than one file is provided, they are assumed to cover the same residues, but the residue numbers are not checked: this allows results from multiple receptor/ligand pairs to be accumulated. Delta-G values are averaged across the files. Only delta-G values with an absolute value exceeding the significance threshold are added: others are set to zero. 
+The pairwise energy decompositions should be created by MMPBSA.py with `&decomp` and `idecomp=3 or 4` in the input file. If more than one file is provided, they are assumed to cover the same residues, but the residue numbers are not checked: this allows results from multiple receptor/ligand pairs to be accumulated. Delta-G values are averaged across the files. Only delta-G values with an absolute value exceeding the significance threshold are added: others are set to zero. The -z option is useful for creating a table to inspect by eye. 
 
 ## ConsolidateHbonds
 
@@ -89,24 +90,29 @@ The pairwise energy decompositions should be created by MMPBSA.py with `&decomp`
 	
 	Plot residue interactions.
 	
-	positional arguments:
-	  control               control file
-	  decomp                decomp table produced by PairwiseDecompTable
-	  hbonds                consolidated hbond file produced by ConsolidateHbonds
-	  thresh                minimum threshold for hbonds
-	  output                output file (PDF)
-	  summary               summary file (CSV)
-	
-	optional arguments:
-	  -h, --help            show this help message and exit
-	  -o, --omit_none       omit residues with no significant interaction energy
-	  -c COMPARE_FILE, --compare_file COMPARE_FILE
-	                        only display interactions that differ from those in
-	                        this file
-	  -t COMPARE_THRESH, --compare_thresh COMPARE_THRESH
-	                        threshold for comparison (default 0.5 kcal/mol)
-	  -x, --omit_same_col   do not show interactions between residues in the same
-                        column
+    positional arguments:
+      control               control file
+      decomp                decomp table produced by PairwiseDecompTable
+      hbonds                consolidated hbond file produced by ConsolidateHbonds
+      thresh                minimum threshold for hbonds
+      output                output file (PDF)
+      summary               summary file (CSV)
+
+    optional arguments:
+      -h, --help            show this help message and exit
+      -a, --annotate_change
+                            annotate the largest energy change with its value
+      -c COMPARE_FILE, --compare_file COMPARE_FILE
+                            only display interactions that differ from those in
+                            this file
+      -l ADD_TITLE, --add_title ADD_TITLE
+                            diagram title
+      -o, --omit_none       omit residues with no significant interaction energy
+      -t COMPARE_THRESH, --compare_thresh COMPARE_THRESH
+                            threshold for comparison (default 0.5 kcal/mol)
+      -x, --omit_same_col   do not show interactions between residues in the same
+                            column
+                        
 Draws an interaction plot similar to the example below, in which delta-G values taken from `decomp` 
 determine the thickness of the lines, and they are coloured black unless a hydrogen bond between the residues is
 listed in `hbonds`. The minimum threshold for delta G values to be depicted is set when running PairwiseDecompTable, while the minimum count for hydrogen bonds to be coloured red is set here by `thresh`. Two
@@ -123,6 +129,7 @@ Col|number of the column in which this residue should be placed (1,2,3..)
 Id|identifier of this residue in the decomp table. Can be 'Gap' to create a gap between residues
 Legend|legend for this residue in the interaction chart. + at the start of the Legend will force the residue to be shown even if it has no interaction energy and -o is specified. The legend must contain a number, representing the residue number to display. It may additionally contain letters, which are assumed to represent the residue code. If no letters are included, a single letter residue code is deduced from the Id field.
 Fill|The colour for the residue on the interaction chart. This can be 'Hydro' to use the built-in hydrophobicity scale, or any colour specifier supported by matplotlib (e.g. 'g', 'green', '#00FFFF').
+Chain|Chain letter to use for the residue on the chart. This column is optional: if it is present, a chain letter need not be specified for all residues.
 
 The built-in hydrophobicity scale is as follows:
 
