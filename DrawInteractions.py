@@ -42,7 +42,6 @@ import sys
 
 import cairo
 import matplotlib.colors as mc
-from PIL import Image
 
 # Dimensions in pixels - can be altered at will, but the underlying software library does impose some limits on maximum sizes.
 
@@ -92,15 +91,19 @@ def main(argv):
     parser.add_argument('thresh', help='minimum threshold for hbonds')
     parser.add_argument('output', help='output file (PDF)')
     parser.add_argument('summary', help='summary file (CSV)')
-    parser.add_argument('-o', '--omit_none', help='omit residues with no significant interaction energy', action='store_true')
+    parser.add_argument('-a', '--annotate_change', help='annotate the largest energy change with its value', action='store_true')
     parser.add_argument('-c', '--compare_file', help='only display interactions that differ from those in this file')
+    parser.add_argument('-l', '--add_title', help='diagram title')
+    parser.add_argument('-o', '--omit_none', help='omit residues with no significant interaction energy', action='store_true')
     parser.add_argument('-t', '--compare_thresh', help='threshold for comparison (default 0.5 kcal/mol)')
     parser.add_argument('-x', '--omit_same_col', help='do not show interactions between residues in the same column', action='store_true')
-    parser.add_argument('-l', '--add_title', help='add title to diagram')
-    parser.add_argument('-p', '--png', help='output as png image', action='store_true')
     args = parser.parse_args()
 
     compare_thresh = 0.5 if args.compare_thresh is None else float(args.compare_thresh)
+
+    if args.annotate_change and not args.compare_file:
+        print 'annotate_change option is only valid when comparing files.'
+        quit()
 
     surface = cairo.PDFSurface(args.output, WIDTH, HEIGHT)
     ctx = cairo.Context(surface)
@@ -179,7 +182,7 @@ def main(argv):
     else:
         BIGGEST_CHANGE = 0.0
 
-    locations = plot_interactions(col_ids, cols, ctx, energies, hbonds, surface, negatives)
+    locations = plot_interactions(col_ids, cols, ctx, energies, hbonds, surface, negatives, args.annotate_change)
 
     if(args.add_title):
         ctx.set_source_rgb(0, 0, 0)
@@ -195,14 +198,6 @@ def main(argv):
         ctx.set_font_size(FONT_SIZE-10)
         ctx.move_to(100,95)
         ctx.show_text(subtitle)
-
-    if args.png:
-        surface.write_to_png(args.output.split(".")[0] + ".png")
-        img = Image.open(args.output.split(".")[0] + ".png")
-        background = Image.new('RGBA', img.size, (255, 255, 255,1000))
-        out_image = Image.alpha_composite(background, img)
-        out_image = out_image.crop(img.getbbox())
-        out_image.save(args.output.split(".")[0] + ".png")
 
     surface.finish()
     surface.flush()
@@ -242,7 +237,7 @@ def write_summary_file(summary, col_ids, cols, energies, locations):
                     writer.writerow(['', '', ''])
 
 
-def plot_interactions(col_ids, cols, ctx, energies, hbonds, surface, negatives):
+def plot_interactions(col_ids, cols, ctx, energies, hbonds, surface, negatives, ann_biggest):
     # Work out the longest column, so that we can centre
     max_res = 0
     for col_id in col_ids:
@@ -267,7 +262,7 @@ def plot_interactions(col_ids, cols, ctx, energies, hbonds, surface, negatives):
         (r1, r2, e) = v
         colour = 'red' if r1 + r2 in hbonds else 'black'
         dashed = (r1 + r2 in negatives)
-        connect_residue(ctx, locations[r1], locations[r2], abs(e), colour, dashed)
+        connect_residue(ctx, locations[r1], locations[r2], abs(e), colour, dashed, ann_biggest)
     surface.flush()
     return locations
 
@@ -345,6 +340,8 @@ def read_control_file(control, col_ids, cols, residue_ids):
                 gapcount += 1
             if row['Legend'][:1].isdigit():
                 row['Legend'] = res_codes[row['Id'].split()[0]] + row['Legend']
+            if 'Chain' not in row:
+                row['Chain'] = ''
             check_res(row['Id'], row['Legend'])
             residue_ids.append(row['Id'])
 
@@ -359,25 +356,21 @@ def draw_residue(ctx, x, y, text, colour, chain):
     ctx.restore()
     ctx.fill()
     ctx.set_source_rgb (0, 0, 0)
-    (x_bearing, y_bearing, add_width, height, x_advance, y_advance) = ctx.text_extents("W")
+    if chain != '':
+        text = chain + ':' + text
+    (x_bearing, y_bearing, add_width, height, x_advance, y_advance) = ctx.text_extents("I")
     (x_bearing, y_bearing, width, height, x_advance, y_advance) = ctx.text_extents(text)
     ctx.move_to(x-(width+add_width)/2, y+height/2)
-    ctx.show_text(chain + ':' + text)
+    ctx.show_text(text)
+
     #ctx.rectangle(x-width/2-2, y-height/2-2, width+4, height+4)
     ctx.stroke()
  
     
-def connect_residue(ctx, loc1, loc2, width, colour, dash):
-
+def connect_residue(ctx, loc1, loc2, width, colour, dash, ann_biggest):
     (x1, y1) = loc1
     (x2, y2) = loc2
 
-
-
-
-    if x1 == x2:
-        pass
-    
     if x1 > x2:
         (x1, y1, x2, y2) = (x2, y2, x1, y1)
         
@@ -402,15 +395,13 @@ def connect_residue(ctx, loc1, loc2, width, colour, dash):
     ctx.set_source_rgb(*mc.colorConverter.to_rgb(colour)) 
     ctx.line_to(end_x, end_y)
     ctx.stroke()
-    # add label with value of change for largest chang
-    if width == math.fabs(BIGGEST_CHANGE):
+    # add label with value of change for largest change
+    if ann_biggest and width == math.fabs(BIGGEST_CHANGE):
         ctx.set_source_rgb(0, 0, 0)
         ctx.set_font_size(FONT_SIZE - 10)
         x_bearing1, y_bearing1, width1, height1 = ctx.text_extents(str(BIGGEST_CHANGE))[:4]
         ctx.move_to((x1 + x2 - (width1 + 15 / 2)) / 2, (y1 + y2 - (height1 + 5 / 2)) / 2)
         ctx.show_text(str(BIGGEST_CHANGE))
-    
-    
 
 # Remove the number from the name. If that leaves a three-letter residue, translate to a single letter
 # Invalid codes translate to X
