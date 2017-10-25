@@ -121,7 +121,7 @@ which lists the total delta-G attributed to each residue depicted.  DrawInteract
 
 Plots may have any number of columns. The assignment of residues to columns, and the order in which they
 are depicted, is defined in the `control` file. The file also defines the residue colour and the text (legend)
-to use when displaying the residue. The control file is in CSV format, with the following columns:
+to use when displaying the residue. The control file can be created with the CreateInteractionControl.py. It is in CSV format and contains the following columns:
 
 Column Header|Meaning
 -------------|-------
@@ -174,14 +174,6 @@ python DrawInteractions.py -o -x -c [**FINAL_DECOMP_MMPBSA_pw_table_20_10_av.csv
 
 Extracts all residues from the hbonds file and the FINAL_DECOMP_MMPBSA_table.csv and creates a control file in preparation for plotting residue interactions with DrawInteractions.py. Residues with weak interaction will be filtered out by the threshold set when creating the plot with DrawInteractions. The output file contains the following columns:
 
-Column Header|Meaning
--------------|-------
-Col|number of the column in which this residue should be placed (1,2,3..)
-Id|identifier of this residue in the decomp table.
-Legend|legend for this residue in the interaction chart.
-Fill|colour for the residue on the interaction chart. Set to 'Hydro' by default to use the built-in hydrophobicity scale.
-Chain|chain letter to use for the residue on the chart.
-
 If no column order is given it will be determined by the input files (hbonds, FINAL_DECOMP_MMPBSA_table.csv).
 
 The mapping file can be used to change the residue and chain numbering. It contains columns like showed here:
@@ -193,12 +185,12 @@ to|residue number that is used as replacement for the 'from' residue number
 chain|chain identifier of the 'to' residue number
 
 ##### Mapping file example content
-from,to,chain
-1,2174,C
-2,2175,C
-3,2176,C
-4,2177,C
-...
+from,to,chain  
+1,2174,C  
+2,2175,C  
+3,2176,C  
+4,2177,C  
+...  
 
 
 #### Example usage:
@@ -207,16 +199,17 @@ CreateInteractionControl.py hbonds_consol.csv FINAL_DECOMP_MMPBSA_table.csv my_c
 
 This will create an output that my look something like this:
 
-Col,Id,Legend,Chain,Fill
-0,ALA 376,9,B,Hydro
-0,ALA 383,16,B,Hydro
-0,ALA 407,40,B,Hydro
-...
-1,ALA  23,2196,C,Hydro
-1,ALA  28,2201,C,Hydro
-1,ALA  35,2208,C,Hydro
-...
-2,ALA 190,35,A,Hydro
-2,ALA 199,44,A,Hydro
-2,ALA 207,52,A,Hydro
-...
+
+Col,Id,Legend,Chain,Fill  
+0,ALA 376,9,B,Hydro  
+0,ALA 383,16,B,Hydro  
+0,ALA 407,40,B,Hydro  
+...  
+1,ALA  23,2196,C,Hydro  
+1,ALA  28,2201,C,Hydro  
+1,ALA  35,2208,C,Hydro  
+...  
+2,ALA 190,35,A,Hydro  
+2,ALA 199,44,A,Hydro  
+2,ALA 207,52,A,Hydro  
+...  
