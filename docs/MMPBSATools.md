@@ -121,7 +121,7 @@ which lists the total delta-G attributed to each residue depicted.  DrawInteract
 
 Plots may have any number of columns. The assignment of residues to columns, and the order in which they
 are depicted, is defined in the `control` file. The file also defines the residue colour and the text (legend)
-to use when displaying the residue. The control file can be created with the CreateInteractionControl.py. It is in CSV format and contains the following columns:
+to use when displaying the residue. The control file is in CSV format, with the following columns:
 
 Column Header|Meaning
 -------------|-------
@@ -159,9 +159,9 @@ python DrawInteractions.py -o -x -c [**FINAL_DECOMP_MMPBSA_pw_table_20_10_av.csv
 
 	usage: CreateInteractionControl.py 	[-m MAPPING_FILE] [-c COLUMN_ORDER]
 										hbond fdmmpbsa output
-	
+
 	Creates a control csv file in preparation for plotting interaction energies with DrawInteractions.py.
-	
+
     positional arguments:
       hbonds               	consolidated hbond file produced by ConsolidateHbonds
       fdmmpbsa              FINAL_DECOMP_MMPBSA_table.csv produced by mmpbsa decomposition
@@ -174,6 +174,14 @@ python DrawInteractions.py -o -x -c [**FINAL_DECOMP_MMPBSA_pw_table_20_10_av.csv
 
 Extracts all residues from the hbonds file and the FINAL_DECOMP_MMPBSA_table.csv and creates a control file in preparation for plotting residue interactions with DrawInteractions.py. Residues with weak interaction will be filtered out by the threshold set when creating the plot with DrawInteractions. The output file contains the following columns:
 
+Column Header|Meaning
+-------------|-------
+Col|number of the column in which this residue should be placed (1,2,3..)
+Id|identifier of this residue in the decomp table.
+Legend|legend for this residue in the interaction chart.
+Fill|colour for the residue on the interaction chart. Set to 'Hydro' by default to use the built-in hydrophobicity scale.
+Chain|chain letter to use for the residue on the chart.
+
 If no column order is given it will be determined by the input files (hbonds, FINAL_DECOMP_MMPBSA_table.csv).
 
 The mapping file can be used to change the residue and chain numbering. It contains columns like showed here:
@@ -185,12 +193,12 @@ to|residue number that is used as replacement for the 'from' residue number
 chain|chain identifier of the 'to' residue number
 
 ##### Mapping file example content
-from,to,chain  
-1,2174,C  
-2,2175,C  
-3,2176,C  
-4,2177,C  
-...  
+from,to,chain
+1,2174,C
+2,2175,C
+3,2176,C
+4,2177,C
+...
 
 
 #### Example usage:
@@ -200,16 +208,85 @@ CreateInteractionControl.py hbonds_consol.csv FINAL_DECOMP_MMPBSA_table.csv my_c
 This will create an output that my look something like this:
 
 
-Col,Id,Legend,Chain,Fill  
-0,ALA 376,9,B,Hydro  
-0,ALA 383,16,B,Hydro  
-0,ALA 407,40,B,Hydro  
-...  
-1,ALA  23,2196,C,Hydro  
-1,ALA  28,2201,C,Hydro  
-1,ALA  35,2208,C,Hydro  
-...  
-2,ALA 190,35,A,Hydro  
-2,ALA 199,44,A,Hydro  
-2,ALA 207,52,A,Hydro  
-...  
+Col,Id,Legend,Chain,Fill
+0,ALA 376,9,B,Hydro
+0,ALA 383,16,B,Hydro
+0,ALA 407,40,B,Hydro
+...
+1,ALA  23,2196,C,Hydro
+1,ALA  28,2201,C,Hydro
+1,ALA  35,2208,C,Hydro
+...
+2,ALA 190,35,A,Hydro
+2,ALA 199,44,A,Hydro
+2,ALA 207,52,A,Hydro
+...
+
+
+## ExtractFramesHighLow
+
+	usage: ExtractFramesHighLow.py [-h] [-w LOW] [-i HIGH] [-l LOW_TRAJ]
+	                               [-t HIGH_TRAJ] [-s SUMMARY]
+	                               energies number
+
+	Creates cpptraj input files to extract high and low energy frames.
+
+	positional arguments:
+	  energies              file with energies created by ExtractMMPBSATotals.py (e.g. out.csv)
+	  number                number of frames that should be extracted
+
+	optional arguments:
+	  -h, --help            show this help message and exit
+	  -w LOW, --low LOW     low energy cpptraj file (default:
+	                        low_energy_frames.cpptraj)
+	  -i HIGH, --high HIGH  high energy cpptraj (default:
+	                        high_energy_frames.cpptraj)
+	  -l LOW_TRAJ, --low_traj LOW_TRAJ
+	                        file name of trajectory for low energy frames(default:
+	                        low_energy_frames.nc
+	  -t HIGH_TRAJ, --high_traj HIGH_TRAJ
+	                        file name of trajectory for high energy
+	                        frames(default: high_energy_frames.nc
+	  -s SUMMARY, --summary SUMMARY
+	                        frame numbers with according energy values (default:
+	                        high_low.txt)
+
+#### Example usage:
+
+ExtractFramesHighLow.py out.csv 10
+
+This produces the cpptraj input files 'high_energy_frames.cpptraj' with content:
+
+trajout high_energy_frames.nc mdcrd onlyframes 6,20,38,41,79,85,95,119,140,148
+go
+
+and 'low_energy_frames.cpptraj' with content:
+
+trajout low_traj_energy_frames.nc mdcrd onlyframes 1,32,62,74,90,101,110,127,141,142
+go
+
+and the summary file 'high_low.txt':
+
+High energy frames:
+6,-78.70563576
+20,-87.54193656
+38,-86.7611052
+41,-86.10029352
+79,-85.67658168
+85,-85.8510936
+95,-83.8349316
+119,-87.1186364
+140,-87.039198
+148,-86.29742984
+
+Low energy frames:
+1,-105.02831768
+32,-106.03692096
+62,-103.4973772
+74,-103.15913968
+90,-108.24683384
+101,-104.23004352
+110,-107.18515456
+127,-105.8267672
+141,-105.8639692
+142,-104.4387324
