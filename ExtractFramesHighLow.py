@@ -53,7 +53,7 @@ def main(argv):
     if args.low_traj:
         low_traj = args.low_traj
     else:
-        low_traj = 'low_traj_energy_frames.nc'
+        low_traj = 'low_energy_frames.nc'
 
     if args.high_traj:
         high_traj = args.high_traj
