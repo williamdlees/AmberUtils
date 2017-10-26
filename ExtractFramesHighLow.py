@@ -66,7 +66,7 @@ def main(argv):
 
     frames = {}
     for i in range(0, len(energies)):
-        frames[i] = energies[i]
+        frames[i+1] = energies[i]
 
     frames = sorted(frames.items(), key=operator.itemgetter(1))
 
