@@ -1,6 +1,6 @@
 #! /usr/bin/env python
 
-# Copyright (c) 2017 Martin Rosellen    
+# Copyright (c) 2017 Martin Rosellen
 
 # Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated
 # documentation files (the "Software"), to deal in the Software without restriction, including without limitation the
@@ -25,7 +25,6 @@ import sys
 import argparse
 import re
 
-
 def main(argv):
     parser = argparse.ArgumentParser(description='Extract residues from pdb')
     parser.add_argument('infile', help='input file (PDB format)')
@@ -33,6 +32,9 @@ def main(argv):
     parser.add_argument('span', help='list of residues with chain identifier to extract (e.g.: "1 20 A 5 10 B ..."), if '
                                      'there is no identifier use \'none\' (e.g.: "1 20 none")')
     args = parser.parse_args()
+
+    # print os.system("cd /d/as12/u/rm001/ && ls")
+
 
     span = args.span.split(' ')
     span = [" " if item == "none" else item for item in span]
@@ -54,11 +56,13 @@ def main(argv):
                         res_num = int(re.search(r'\d+', line[22:27]).group())
                         if res_num in residues:
                             extracted += line
+            # retaining all TER records (even for parts that got removed) does not seem to be a problem for chimera,
+            # cpptraj or leap
+            if line[0:3] == 'TER':
+                extracted += line
 
     with open(args.outfile, 'w') as o:
         o.write(extracted)
-
-    print extracted
 
 if __name__ == "__main__":
     main(sys.argv)
