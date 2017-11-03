@@ -39,7 +39,7 @@ The script should be run after the MMPBSA.py calculation is complete. The `keep_
 	  distfile    distribution plot of energy totals (.png, .bmp, .pdf)
 	
 	optional arguments:
-	  -c, --column  name of column to use (default TOTALS)
+	  -c, --column  name of column to use (default TOTAL)
 	  -h, --help  show this help message and exit
 
 CalcBounds determines the format to use for the graphics file from the extension of the specified filename.
