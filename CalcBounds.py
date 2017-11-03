@@ -42,9 +42,9 @@ def main(argv):
     parser.add_argument('sumfile', help='summary file (text format)')
     parser.add_argument('trendfile', help='trend plot with confidence intervals (.png, .bmp, .pdf)')
     parser.add_argument('distfile', help='distribution plot of energy totals (.png, .bmp, .pdf)')
-    parser.add_argument('-c', '--column', help='name of column to use (default TOTALS)')
+    parser.add_argument('-c', '--column', help='name of column to use (default TOTAL)')
     args = parser.parse_args()
-    column = 'TOTALS' if not args.column else args.column
+    column = 'TOTAL' if not args.column else args.column
     
     global mean_results
     
