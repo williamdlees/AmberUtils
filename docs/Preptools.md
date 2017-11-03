@@ -242,3 +242,31 @@ The tool will report any residue substitutions that are made as a result of the 
 
 	optional arguments:
 	  -h, --help  show this help message and exit
+
+## ExtractResidues
+
+	usage: ExtractResidues.py [-h] infile outfile span
+
+	Extract residues from pdb
+
+	positional arguments:
+	  infile      input file (PDB format)
+	  outfile     output file (PDB format)
+	  span        list of residues with chain identifier to extract (e.g.: "1 20 A
+		      5 10 B ..."), if there is no identifier use 'none' (e.g.: "1 20
+		      none")
+
+	optional arguments:
+	  -h, --help  show this help message and exit
+
+Extracts the specified residues and puts them into a new pdb file. Only 'ATOM' and TER records will be copied to the pdb outfile.
+
+#### Example 1: Extract chains
+ExtractResidues.py my_struct.pdb my_struct_AB.pdb "1 9999 A 1 9999 B"
+
+This creates the pdb file 'my_struct_AB.pdb' with residues 1 to 9999 of the chain A and B.
+
+#### Example 2: Extract residues from pdb with no chain identifiers
+ExtractResidues.py nochain_struct.pdb nochain_struct_1_150.pdb "1 150 none"
+
+The specified file 'nochain_struct.pdb' has no chain identifiers. With the keyword 'none' we can still extract residues. The file 'nochain_struct_1_150.pdb' contains residues 1 to 150.
