@@ -67,7 +67,7 @@ def main(argv):
     xs = []
 
     with open(args.sumfile, 'w') as fo:
-        for i in range(100, len(means)+100, 100):
+        for i in range(5, len(means)+5, 5):
             if i >= 10000:
                 print('Stopping after 10000 values due to limitations in the bootstrap function.')
                 break
