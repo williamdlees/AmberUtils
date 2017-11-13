@@ -75,18 +75,12 @@ def main(argv):
 
     with open(summary, 'w') as s:
         s.write("High energy frames:\n")
-        high_average = 0
         for key, val in high:
-            high_average += val
             s.write(str(key) + "," + str(val) + "\n")
-        s.write('Average low binding energy frames: ' + str(round(high_average/len(high), 2)) + "\n")
 
         s.write("\nLow energy frames:\n")
-        low_average = 0
         for key, val in low:
-            low_average += val
             s.write(str(key) + "," + str(val) + "\n")
-        s.write('Average low binding energy frames: ' + str(round(low_average/len(low), 2)) + "\n")
 
     low_frames = [str(item[0]) for item in low]
     low_frames = ','.join(low_frames)
