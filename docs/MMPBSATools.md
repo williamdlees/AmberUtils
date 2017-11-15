@@ -117,7 +117,10 @@ Draws an interaction plot similar to the example below, in which delta-G values 
 determine the thickness of the lines, and they are coloured black unless a hydrogen bond between the residues is
 listed in `hbonds`. The minimum threshold for delta G values to be depicted is set when running PairwiseDecompTable, while the minimum count for hydrogen bonds to be coloured red is set here by `thresh`. Two
 output files are produced: a drawing, whose format is determined by the file extension, and a summary file,
-which lists the total delta-G attributed to each residue depicted.  DrawInteractions can also create a delta-delta-G plot, showing the difference in delta G between two `decomp` files.
+which lists the total delta-G attributed to each residue depicted.  
+
+DrawInteractions can also create a delta-delta-G plot, showing the difference in delta G between two `decomp` files.
+In this case, solid lines are used to indicate increased energy of interaction, and dotted lines decresed energy of interaction.
 
 Plots may have any number of columns. The assignment of residues to columns, and the order in which they
 are depicted, is defined in the `control` file. The file also defines the residue colour and the text (legend)
